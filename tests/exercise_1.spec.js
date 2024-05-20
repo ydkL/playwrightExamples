@@ -9,7 +9,7 @@ test.describe('sigup tests', () => {
 
     test('Test Case 1 : Register User with Func', async ({ page }) => {
         commonFuncs = new CommonFunc(page);   
-        commonFuncs.goto();
+        await commonFuncs.goto();
         await expect(page.getByRole('link', { name: 'Website for automation' })).toBeVisible();
         await expect(page.getByRole('link', { name: ' Home' })).toHaveCSS("color", "rgb(255, 165, 0)");
         await commonFuncs.signUp()
