@@ -65,16 +65,18 @@ export class CommonFunc {
         let last_name = (Math.random() + 1).toString(36).substring(7);
 
         await this.page.getByLabel('Last name *').type(last_name);
+        
+        let city = (Math.random() + 1).toString(36).substring(7);
 
-        await this.page.getByLabel('Address * (Street address, P.').type('Ankara - Yenimahalle');
+        await this.page.getByLabel('Address * (Street address, P.').type(city);
 
         await this.page.getByLabel('Country *').selectOption('India');
 
-        await this.page.getByLabel('State *').type('Ankara');
+        await this.page.getByLabel('State *').type(city);
 
-        await this.page.getByLabel('City  *').type('Yenimahalle');
+        await this.page.getByLabel('City  *').type(city);
 
-        await this.page.locator('#zipcode').type('06560');
+        await this.page.locator('#zipcode').type('012345');
 
         let phone_number = (Math.random() + 1).toString(36).substring(11);
 
