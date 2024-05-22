@@ -40,7 +40,20 @@ module.exports = defineConfig({
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
-    }
+    },
+    {
+      name: 'WebKit Browser',
+      use: { browserName: 'webkit' },
+    },
+
+    {
+      name: 'Android Chrome',
+      use: { ...chromium, channel: 'chrome' },
+      browserName: 'chromium',
+      contextOptions: {
+        ...devices['Pixel 5'],
+      },
+    },
 
     // {
     //   name: 'firefox',
