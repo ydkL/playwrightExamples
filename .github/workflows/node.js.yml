@@ -31,4 +31,24 @@ jobs:
       run: npx playwright install --with-deps
     - run: npm run build --if-present
     - run: npm install
-    - run: npx playwright test ./tests/keyT_test.spec.js
+    - run: npx playwright test ./tests/keyT_test.spec.js --reporter=@playwright/test-reporter --reporter-options=allure=true
+
+    - name: Install Allure CLI
+      run: npm install -g allure-commandline
+
+    - name: Run Playwright Tests with Allure Reporter
+      run: |
+        npx playwright test --reporter=@playwright/test-reporter --reporter-options=allure=true
+
+    - name: Generate Allure Test Report
+      run: |
+        allure generate --clean
+        mkdir public
+        mv allure-report public/
+
+    - name: Deploy to GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@4.1.5
+      with:
+        ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        BRANCH: gh-pages
+        FOLDER: public
