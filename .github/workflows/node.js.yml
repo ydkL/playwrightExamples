@@ -21,41 +21,18 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
+    - uses: actions/setup-node@v4
       with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm install
+        node-version: 18
+    - name: Install dependencies
+      run: npm ci
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
-    - name: Install Allure CLI
-      run: npm install @playwright/test allure-playwright
-
-    - name: Run Playwright Tests with Allure Reporter
-      run: npx playwright test ./tests/keyT_test.spec.js --reporter=line,allure-playwright
-
-    - name: Setup Allure History
-      uses: actions/checkout@v4.1.1
-      if: always()
-      continue-on-error: true
+    - name: Run Playwright tests
+      run: npx playwright test ./tests/keyT_test.spec.js
+    - uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
       with:
-        ref: gh-pages
-        path: gh-pages
-
-    - name: Generate Allure Report
-      uses: simple-elf/allure-report-action@v1.8
-      if: always()
-      with:
-        allure_results: target/allure-results
-        allure_history: allure-history
-
-    - name: Publish Allure Report
-      if: always()
-      uses: peaceiris/actions-gh-pages@v3.9.3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_branch: gh-pages
-        publish_dir: allure-history
+        name: playwright-report
+        path: playwright-report/
+        retention-days: 30
