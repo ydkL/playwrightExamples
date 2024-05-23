@@ -37,17 +37,25 @@ jobs:
     - name: Run Playwright Tests with Allure Reporter
       run: npx playwright test ./tests/keyT_test.spec.js --reporter=line,allure-playwright
 
-    - name: Generate Allure Test Report
+    - name: Setup Allure History
+      uses: actions/checkout@v4.1.1
       if: always()
-      run: |
-        allure generate --clean
-        mkdir public
-        mv allure-report public/
-
-    - name: Deploy to GitHub Pages
-      if: always()
-      uses: JamesIves/github-pages-deploy-action@4.1.5
+      continue-on-error: true
       with:
-        ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        BRANCH: gh-pages
-        FOLDER: public
+        ref: gh-pages
+        path: gh-pages
+
+    - name: Generate Allure Report
+      uses: simple-elf/allure-report-action@v1.8
+      if: always()
+      with:
+        allure_results: target/allure-results
+        allure_history: allure-history
+
+    - name: Publish Allure Report
+      if: always()
+      uses: peaceiris/actions-gh-pages@v3.9.3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_branch: gh-pages
+        publish_dir: allure-history
